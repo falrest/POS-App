@@ -1,0 +1,22 @@
+            TOKO SEJAHTERA            
+      Jl. Contoh No. 123, Jepara      
+            0812-3456-7890            
+======================================
+No: INV20260713131100
+Tgl: 2026-07-13 13:11:00
+Kasir: Kasir
+--------------------------------------
+Aqua Botol 600ml
+1 x Rp4.000                    Rp4.000
+Indomie Goreng
+2 x Rp3.500                    Rp7.000
+--------------------------------------
+Subtotal                      Rp11.000
+Diskon (10%)                  -Rp1.112
+TOTAL                          Rp9.888
+Bayar                          Rp9.888
+Kembali                            Rp0
+======================================
+          Terima kasih atas           
+           kunjungan Anda!            
+======================================
