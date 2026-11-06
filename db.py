@@ -85,8 +85,6 @@ def init_db(seed_sample_data=True):
     conn.close()
 
 
-# ---------------- PRODUCTS ----------------
-
 def get_all_products(search=None):
     conn = get_conn()
     if search:
@@ -149,8 +147,6 @@ def adjust_stock(pid, delta):
     conn.close()
 
 
-# ---------------- TRANSACTIONS ----------------
-
 def generate_invoice_no():
     return "INV" + datetime.now().strftime("%Y%m%d%H%M%S")
 
@@ -186,9 +182,6 @@ def save_transaction(cart_items, subtotal, discount_percent, discount_amount, to
     conn.commit()
     conn.close()
     return invoice_no, transaction_id, now
-
-
-# ---------------- REPORTS ----------------
 
 def get_sales_summary(start_date, end_date):
     """start_date/end_date format 'YYYY-MM-DD'. Rentang inklusif sepanjang hari."""
