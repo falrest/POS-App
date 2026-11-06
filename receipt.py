@@ -13,7 +13,7 @@ STORE_NAME = "TOKO FALREST"
 STORE_ADDRESS = "Jl. Kudus"
 STORE_PHONE = "0850-0000-0000"
 
-WIDTH = 38  # lebar kertas struk (karakter)
+WIDTH = 38  
 
 
 def rupiah(n):
