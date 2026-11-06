@@ -31,7 +31,6 @@ class POSApp(ctk.CTk):
 
         db.init_db()
 
-        # cart state: list of dict {product_id, barcode, name, price, qty, subtotal, stock}
         self.cart = []
         self.discount_percent = 0.0
         self.discount_amount_manual = 0.0
@@ -39,14 +38,10 @@ class POSApp(ctk.CTk):
         self._build_layout()
         self.show_kasir()
 
-    # ---------------------------------------------------------------
-    # LAYOUT UTAMA (Sidebar + Content area)
-    # ---------------------------------------------------------------
     def _build_layout(self):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Sidebar
         sidebar = ctk.CTkFrame(self, width=210, corner_radius=0, fg_color="#0F172A")
         sidebar.grid(row=0, column=0, sticky="nswe")
         sidebar.grid_propagate(False)
@@ -77,7 +72,6 @@ class POSApp(ctk.CTk):
         )
         bottom_info.pack(side="bottom", pady=20, padx=20, anchor="w")
 
-        # Content container
         self.content = ctk.CTkFrame(self, fg_color=BG_COLOR)
         self.content.grid(row=0, column=1, sticky="nswe")
         self.content.grid_columnconfigure(0, weight=1)
@@ -98,9 +92,6 @@ class POSApp(ctk.CTk):
         elif key == "laporan":
             self.show_laporan()
 
-    # ---------------------------------------------------------------
-    # HALAMAN KASIR
-    # ---------------------------------------------------------------
     def show_kasir(self):
         if "kasir" in self.pages:
             self.pages["kasir"].grid(row=0, column=0, sticky="nswe")
@@ -116,7 +107,6 @@ class POSApp(ctk.CTk):
         self.pages["kasir"] = page
         self.nav_buttons["kasir"].configure(fg_color=PRIMARY_COLOR)
 
-        # ---------- LEFT: Scan barcode + grid produk ----------
         left = ctk.CTkFrame(page, fg_color=CARD_COLOR, corner_radius=14)
         left.grid(row=0, column=0, sticky="nswe", padx=(20, 10), pady=20)
         left.grid_rowconfigure(2, weight=1)
@@ -145,7 +135,6 @@ class POSApp(ctk.CTk):
         self.product_scroll = ctk.CTkScrollableFrame(left, fg_color="transparent")
         self.product_scroll.pack(fill="both", expand=True, padx=14, pady=(0, 14))
 
-        # ---------- RIGHT: Keranjang / Cart ----------
         right = ctk.CTkFrame(page, fg_color=CARD_COLOR, corner_radius=14)
         right.grid(row=0, column=1, sticky="nswe", padx=(10, 20), pady=20)
         right.grid_rowconfigure(1, weight=1)
@@ -154,7 +143,6 @@ class POSApp(ctk.CTk):
         ctk.CTkLabel(right, text="🛒 Keranjang Belanja", font=ctk.CTkFont(size=16, weight="bold")).grid(
             row=0, column=0, sticky="w", padx=20, pady=(18, 8))
 
-        # Treeview untuk cart (pakai ttk karena tabel scrollable rapi)
         style = ttk.Style()
         style.theme_use("clam")
         style.configure("Cart.Treeview", rowheight=30, font=("Segoe UI", 10), background="white",
@@ -182,7 +170,6 @@ class POSApp(ctk.CTk):
         self.cart_tree.configure(yscrollcommand=cart_scroll.set)
         cart_scroll.grid(row=0, column=1, sticky="ns")
 
-        # Tombol qty +/- dan hapus
         cart_btns = ctk.CTkFrame(right, fg_color="transparent")
         cart_btns.grid(row=2, column=0, sticky="ew", padx=16, pady=(8, 0))
         ctk.CTkButton(cart_btns, text="➖ Kurangi", width=90, height=30, fg_color="#F59E0B",
@@ -194,7 +181,6 @@ class POSApp(ctk.CTk):
         ctk.CTkButton(cart_btns, text="Kosongkan", width=90, height=30, fg_color="#94A3B8",
                       command=self._clear_cart).pack(side="left")
 
-        # ---------- Diskon & Total ----------
         summary = ctk.CTkFrame(right, fg_color="#F8FAFC", corner_radius=12)
         summary.grid(row=3, column=0, sticky="ew", padx=16, pady=14)
         summary.grid_columnconfigure(1, weight=1)
@@ -234,7 +220,6 @@ class POSApp(ctk.CTk):
         value_label.grid(row=row, column=1, sticky="e", padx=14, pady=(4, 12 if big else 4))
         return value_label
 
-    # ---------------- Product grid (kasir) ----------------
     def _refresh_product_grid(self):
         for w in self.product_scroll.winfo_children():
             w.destroy()
@@ -265,7 +250,6 @@ class POSApp(ctk.CTk):
         if not products:
             ctk.CTkLabel(self.product_scroll, text="Produk tidak ditemukan.", text_color=TEXT_MUTED).pack(pady=30)
 
-    # ---------------- Barcode scan ----------------
     def _on_scan_barcode(self, event=None):
         code = self.barcode_entry.get().strip()
         self.barcode_entry.delete(0, "end")
@@ -358,7 +342,6 @@ class POSApp(ctk.CTk):
             self.cart = []
             self._render_cart()
 
-    # ---------------- Diskon & Kalkulasi ----------------
     def _get_subtotal(self):
         return sum(item["subtotal"] for item in self.cart)
 
@@ -377,7 +360,7 @@ class POSApp(ctk.CTk):
         percent = max(0, min(percent, 100))
         discount_from_percent = subtotal * (percent / 100)
         total_discount = discount_from_percent + max(0, nominal)
-        total_discount = min(total_discount, subtotal)  # tidak boleh negatif
+        total_discount = min(total_discount, subtotal) 
 
         total = subtotal - total_discount
 
@@ -390,7 +373,6 @@ class POSApp(ctk.CTk):
 
         return subtotal, total_discount, total
 
-    # ---------------- Pembayaran & Struk ----------------
     def _open_payment_dialog(self):
         if not self.cart:
             messagebox.showinfo("Keranjang kosong", "Silakan tambahkan produk ke keranjang terlebih dahulu.")
@@ -472,7 +454,6 @@ class POSApp(ctk.CTk):
             dialog.destroy()
             self._show_receipt_window(receipt_text, path)
 
-            # reset kasir
             self.cart = []
             self.discount_percent_entry.delete(0, "end")
             self.discount_amount_entry.delete(0, "end")
@@ -520,9 +501,6 @@ class POSApp(ctk.CTk):
             messagebox.showwarning("Cetak", f"Tidak bisa mencetak otomatis di sistem ini.\n"
                                              f"File struk tersimpan di:\n{path}\n\nDetail: {e}")
 
-    # =================================================================
-    # HALAMAN PRODUK (CRUD)
-    # =================================================================
     def show_produk(self):
         self.nav_buttons["produk"].configure(fg_color=PRIMARY_COLOR)
         if "produk" in self.pages:
@@ -670,9 +648,6 @@ class POSApp(ctk.CTk):
         ctk.CTkButton(dialog, text="💾 Simpan", height=42, fg_color=SUCCESS_COLOR,
                       font=ctk.CTkFont(size=14, weight="bold"), command=save).pack(fill="x", padx=30, pady=20)
 
-    # =================================================================
-    # HALAMAN LAPORAN PENJUALAN
-    # =================================================================
     def show_laporan(self):
         self.nav_buttons["laporan"].configure(fg_color=PRIMARY_COLOR)
         if "laporan" in self.pages:
